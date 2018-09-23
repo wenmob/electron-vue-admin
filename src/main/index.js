@@ -65,7 +65,7 @@ app.on('ready', function() {
           newwin = null
         });
       }
-  })
+  });
 })
 
 app.on('window-all-closed', () => {

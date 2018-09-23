@@ -14,6 +14,7 @@ Vue.use({
     Vue.prototype.$electron = global.electron;
     Vue.prototype.$ipc = global.ipcRenderer || {};
     Vue.prototype.$bowerWin = global.bowerWin;
+    Vue.prototype.$remote = global.remote;
   }
 });
 /* eslint-disable no-new */

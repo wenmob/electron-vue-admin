@@ -15,7 +15,7 @@
      <div v-if="errorLoad" class="sh-d2" style="background: #fff" align="center">
        <div class="sh-d2-d1">网络故障，请<a @click="refener">刷新</a>重试</div>
      </div>
-     <webview v-if="winner" class="sh-web" :src="userPage.url" id="myIframe" plugins allowpopups></webview>
+     <webview v-if="winner" class="sh-web" :src="userPage.url" id="myIframe" autosize plugins allowpopups></webview>
   </div>
 </template>
 
@@ -37,7 +37,6 @@ export default {
   },
   inject: ['reload'],
   mounted() {
-    this.listenKey();
     if (this.$route.query.targetObject) {
       this.userPage = {...this.$route.query.targetObject};
       this.listenIframe();
@@ -52,7 +51,7 @@ export default {
        */
       web.addEventListener("dom-ready", (e) => {
         this.loading = false;
-        
+        this.listenKey();
         const webContents = web.getWebContents();
         /**
          * 解决没有弹出新地址的问题, 默认情况下是不支持有弹出框的
@@ -69,19 +68,39 @@ export default {
       web.addEventListener('close', function() {
         web.src = 'about:blank';
       });
+      /**
+       * 加载失败
+       */
+      web.addEventListener(
+        "did-get-response-details",
+        ({ httpResponseCode }) => {
+          if (httpResponseCode != 200) {
+            this.errorLoad = true;
+          }
+        }
+      );
     },
     goFirst() {
       this.$router.push('/')
     },
+    /**
+     * 刷新按钮
+     */
     refener() {
       const web = document.getElementById("myIframe");
-      web.reloadIgnoringCache();
+      if (this.errorLoad) {
+        this.errorLoad = false;
+        web.clearHistory();
+        this.reload();
+      } else {
+        web.reloadIgnoringCache();
+      }
     },
     /**
      * 监听键盘事件F12 打开开发者工具
      */
     listenKey() {
-      const web = document.getElementById("myIframe");
+      const web = document.getElementById("myIframe");  
       document.onkeydown=function(event) {
         let e = event || window.event || arguments.callee.caller.arguments[0];
         if(e && e.keyCode == 123) {
@@ -216,6 +235,7 @@ export default {
     top: 40px;
     left: 0px;
     background: #0E1A2D;
+    z-index: 5000;
   }
   .sh-d2 img{
     position: absolute;

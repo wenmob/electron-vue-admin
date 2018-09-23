@@ -20,9 +20,11 @@
       const electron = require('electron');
       const ipcRenderer = electron.ipcRenderer;
       const bowerWin = electron.BrowserWindow;
+      const remote = electron.remote;
       global.electron = electron;
       global.ipcRenderer = ipcRenderer;
       global.bowerWin = bowerWin;
+      global.remote = remote;
     </script>
     <!-- webpack builds are automatically injected -->
   </body>
