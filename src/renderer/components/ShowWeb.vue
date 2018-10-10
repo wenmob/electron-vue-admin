@@ -69,18 +69,6 @@ export default {
         web.src = 'about:blank';
       });
       /**
-       * 访问出问题
-       */
-      web.addEventListener(
-        "did-get-response-details",
-        ({ httpResponseCode }) => {
-          console.log(httpResponseCode);
-          if (httpResponseCode != 200) {
-            this.errorLoad = true;
-          }
-        }
-      );
-      /**
        * 加载失败
        */
       web.addEventListener(
